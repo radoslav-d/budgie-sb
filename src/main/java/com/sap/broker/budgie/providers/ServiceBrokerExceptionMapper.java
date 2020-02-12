@@ -10,12 +10,19 @@ import javax.ws.rs.ext.Provider;
 import com.sap.broker.budgie.domain.ServiceBrokerError;
 import com.sap.broker.budgie.exception.ConflictException;
 import com.sap.broker.budgie.exception.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
 
 @Provider
 public class ServiceBrokerExceptionMapper implements ExceptionMapper<Throwable> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     @Override
     public Response toResponse(Throwable throwable) {
+        LOGGER.error(throwable.getMessage(), throwable);
         if (throwable instanceof WebApplicationException) {
             return fromWebApplicationException((WebApplicationException) throwable);
         }

@@ -12,7 +12,7 @@ import com.sap.broker.budgie.impl.ServiceBroker;
 
 import java.util.List;
 
-@Path("/catalog")
+@Path("/{configId}/v2/catalog")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CatalogResource {
@@ -27,12 +27,12 @@ public class CatalogResource {
     }
 
     @GET
-    public Catalog getCatalog() {
+    public Catalog getCatalog(@PathParam("configId") String configId) {
         return serviceBroker.getCatalog();
     }
 
     @PUT
-    public Response createServiceOffering(Service service) {
+    public Response createServiceOffering(@PathParam("configId") String configId, Service service) {
         Catalog catalog = serviceBroker.getCatalog();
         catalog.getServices().add(service);
         processCatalog(catalog);

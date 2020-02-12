@@ -12,11 +12,11 @@ public class AsyncOperationManager {
 
     private Map<UUID, AsyncOperation> asyncOperations = new HashMap<>();
 
-    public AsyncOperation getOperation(UUID id) {
+    public synchronized AsyncOperation getOperation(UUID id) {
         return asyncOperations.get(id);
     }
 
-    public void addOperation(UUID id, AsyncOperation asyncOperation) {
+    public synchronized void addOperation(UUID id, AsyncOperation asyncOperation) {
         asyncOperations.put(id, asyncOperation);
     }
 }

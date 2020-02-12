@@ -30,7 +30,7 @@ public class ServiceBroker {
         return configuration.getCatalog();
     }
 
-    public Collection<ServiceInstance> getAll() {
+    public synchronized Collection<ServiceInstance> getAll() {
         return serviceInstances.values();
     }
 
@@ -38,7 +38,7 @@ public class ServiceBroker {
         return get(id, true);
     }
 
-    public ServiceInstance get(UUID id, boolean required) {
+    public synchronized ServiceInstance get(UUID id, boolean required) {
         ServiceInstance serviceInstance = serviceInstances.get(id);
         if (serviceInstance == null && required) {
             throw new NotFoundException(MessageFormat.format("Service instance \"{0}\" not found!", id));
@@ -46,19 +46,19 @@ public class ServiceBroker {
         return serviceInstance;
     }
 
-    public void create(ServiceInstance serviceInstance) {
+    public synchronized void create(ServiceInstance serviceInstance) {
         serviceInstances.put(serviceInstance.getId(), serviceInstance);
     }
 
-    public void update(ServiceInstance serviceInstance) {
+    public synchronized void update(ServiceInstance serviceInstance) {
         serviceInstances.put(serviceInstance.getId(), serviceInstance);
     }
 
-    public void deleteAll() {
+    public synchronized void deleteAll() {
         serviceInstances.clear();
     }
 
-    public void delete(UUID id) {
+    public synchronized void delete(UUID id) {
         ServiceInstance serviceInstance = serviceInstances.remove(id);
         if (serviceInstance == null) {
             throw new NotFoundException(MessageFormat.format("Service instance \"{0}\" not found!", id));

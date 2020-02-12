@@ -4,14 +4,16 @@
 
 ### Request
 
-Route: `PUT /v2/configuration`
+Route: `PUT /v2/configuration/{configurationId}`
+
+`configurationId`: string - MUST be a unique value. The configuration in the body will be mapped to this ID and the behavior of each request to `/{configurationId}/v2/service_instances/` (Open Service Broker API), will be computed against the configuration mapped to this ID.
 
 Body: `BehaviorConfiguration` object in JSON format, which may have the following properties:
 
 * `id`: string/uuid - the unique ID of the configuration.
 * `syncDuration`: integer - if set, an operation will be synchronous and will take the specified time in milliseconds. It is the default behavior and may be set if the user wants to test a scenario where the request timeouts. 
 * `asyncDuration`: integer - if set, an operation will be asynchronous and will take the specified time in milliseconds.  
-For example: `async: 10` will result in asynchronous operations, lasting 10 milliseconds.
+For example: `asyncDuration: 10` will result in asynchronous operations, lasting 10 milliseconds.
 * `failConfigurations`: array of `FailConfiguration` objects - if set, it can enable failing create/update/delete/bind/unbind operation.
 
 `FailConfiguration` may have the following properties:
@@ -45,17 +47,27 @@ An instance, which has service offering `foo` and a plan `baz` will go through s
 
 ### Request
 
-Route: `GET /v2/configuration`
+Route: `GET /v2/configuration/{configurationId}`
 
-Body: `BehaviorConfiguration` object (see the upper section).
+`configurationId`: string - the unique ID of the configuration.
+
+Response body: `BehaviorConfiguration` object (see the upper section).
 
 ## Resetting the service broker behavior
 
 ### Request
 
-Route: `DELETE /v2/configuration`
+Route: `DELETE /v2/configuration/{configurationId}`
+
+`configurationId`: string - the unique ID of the configuration to be deleted.
 
 This will cause the broker to fall back to normal execution, which means synchronous operations with no downtime.
+
+## Getting all configurations
+
+Route: `GET /v2/configuration`
+
+Response body: mapping between `configurationId` and `BehaviorConfiguration`.
 
 ## Configuration example
 

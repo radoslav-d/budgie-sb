@@ -13,7 +13,7 @@ import com.sap.broker.budgie.resources.api.CatalogResource;
 import com.sap.broker.budgie.resources.api.ConfigurationResource;
 import com.sap.broker.budgie.resources.api.ServiceInstancesResource;
 
-@ApplicationPath("/v2")
+@ApplicationPath("/")
 public class ServiceBrokerApplication extends Application {
 
     @Override

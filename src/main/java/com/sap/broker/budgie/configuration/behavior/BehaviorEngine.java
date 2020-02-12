@@ -7,6 +7,9 @@ import com.sap.broker.budgie.domain.ServiceInstance;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -15,23 +18,33 @@ import java.util.stream.Stream;
 public class BehaviorEngine {
 
     private ApplicationConfiguration appConfiguration;
-    private BehaviorConfiguration configuration;
+
+    private Map<String, BehaviorConfiguration> configurations = new HashMap<>();
 
     @Inject
     public BehaviorEngine(ApplicationConfiguration configuration) {
         this.appConfiguration = configuration;
     }
 
-    public void setConfiguration(BehaviorConfiguration configuration) {
-        this.configuration = configuration;
+    public synchronized void addConfiguration(String id, BehaviorConfiguration configuration) {
+        configurations.put(id, configuration);
     }
 
-    public BehaviorConfiguration getConfiguration() {
-        return configuration;
+    public synchronized BehaviorConfiguration removeConfiguration(String id) {
+        return configurations.remove(id);
     }
 
-    public Integer getDuration() {
-        if (isAsync()) {
+    public synchronized BehaviorConfiguration getConfiguration(String id) {
+        return configurations.get(id);
+    }
+
+    public synchronized Map<String, BehaviorConfiguration> getConfigurations() {
+        return Collections.unmodifiableMap(configurations);
+    }
+
+    public Integer getDuration(String id) {
+        BehaviorConfiguration configuration = getConfiguration(id);
+        if (isAsync(id)) {
             return configuration.getAsyncDuration();
         }
         if (configuration != null && configuration.getSyncDuration() != null) {
@@ -40,11 +53,13 @@ public class BehaviorEngine {
         return 0;
     }
 
-    public boolean isAsync() {
+    public boolean isAsync(String id) {
+        BehaviorConfiguration configuration = getConfiguration(id);
         return configuration != null && configuration.getAsyncDuration() != null;
     }
 
-    public Optional<Integer> shouldOperationFail(FailConfiguration.OperationType operationType, ServiceInstance serviceInstance) {
+    public Optional<Integer> shouldOperationFail(String id, FailConfiguration.OperationType operationType, ServiceInstance serviceInstance) {
+        BehaviorConfiguration configuration = getConfiguration(id);
         if (configuration == null || configuration.getFailConfigurations() == null) {
             return Optional.empty();
         }

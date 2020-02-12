@@ -2,7 +2,7 @@
 applications:
   - name: budgie-sb
     host: budgie-sb
-    path: target/budgie-sb-0.0.1-SNAPSHOT.war
+    path: target/budgie-sb-0.1.0-SNAPSHOT.war
     buildpack: sap_java_buildpack
     disk_quota: 256M
     memory: 1G
