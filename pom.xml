@@ -6,7 +6,7 @@
 
     <groupId>com.sap</groupId>
     <artifactId>budgie-sb</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2</version>
     <packaging>war</packaging>
 
     <properties>

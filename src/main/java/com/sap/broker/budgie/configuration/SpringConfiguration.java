@@ -3,7 +3,6 @@ package com.sap.broker.budgie.configuration;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sap.broker.budgie.helpers.BehaviorConfigurationValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -27,10 +26,4 @@ public class SpringConfiguration {
     public List<Visitor> catalogVisitors() {
         return Arrays.asList(new CatalogValidatingVisitor(), new GuidInsertingVisitor());
     }
-
-    @Bean
-    public BehaviorConfigurationValidator behaviorConfigurationValidator() {
-        return  new BehaviorConfigurationValidator();
-    }
-
 }

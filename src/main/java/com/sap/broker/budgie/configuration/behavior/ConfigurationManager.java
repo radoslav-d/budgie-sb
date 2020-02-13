@@ -8,42 +8,41 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiPredicate;
-import java.util.stream.Stream;
 
 @Component
-public class BehaviorEngine {
+public class ConfigurationManager {
 
     private ApplicationConfiguration appConfiguration;
 
-    private Map<String, BehaviorConfiguration> configurations = new HashMap<>();
+    private Map<String, ServiceBrokerConfiguration> configurations = new ConcurrentHashMap<>();
 
     @Inject
-    public BehaviorEngine(ApplicationConfiguration configuration) {
+    public ConfigurationManager(ApplicationConfiguration configuration) {
         this.appConfiguration = configuration;
     }
 
-    public synchronized void addConfiguration(String id, BehaviorConfiguration configuration) {
+    public void addConfiguration(String id, ServiceBrokerConfiguration configuration) {
         configurations.put(id, configuration);
     }
 
-    public synchronized BehaviorConfiguration removeConfiguration(String id) {
+    public ServiceBrokerConfiguration removeConfiguration(String id) {
         return configurations.remove(id);
     }
 
-    public synchronized BehaviorConfiguration getConfiguration(String id) {
+    public ServiceBrokerConfiguration getConfiguration(String id) {
         return configurations.get(id);
     }
 
-    public synchronized Map<String, BehaviorConfiguration> getConfigurations() {
+    public Map<String, ServiceBrokerConfiguration> getConfigurations() {
         return Collections.unmodifiableMap(configurations);
     }
 
     public Integer getDuration(String id) {
-        BehaviorConfiguration configuration = getConfiguration(id);
+        ServiceBrokerConfiguration configuration = getConfiguration(id);
         if (isAsync(id)) {
             return configuration.getAsyncDuration();
         }
@@ -54,28 +53,32 @@ public class BehaviorEngine {
     }
 
     public boolean isAsync(String id) {
-        BehaviorConfiguration configuration = getConfiguration(id);
+        ServiceBrokerConfiguration configuration = getConfiguration(id);
         return configuration != null && configuration.getAsyncDuration() != null;
     }
 
+    public boolean isSync(String id) {
+        return !isAsync(id);
+    }
+
     public Optional<Integer> shouldOperationFail(String id, FailConfiguration.OperationType operationType, ServiceInstance serviceInstance) {
-        BehaviorConfiguration configuration = getConfiguration(id);
+        ServiceBrokerConfiguration configuration = getConfiguration(id);
         if (configuration == null || configuration.getFailConfigurations() == null) {
             return Optional.empty();
         }
         return configuration.getFailConfigurations().stream()
             .filter(failConfig -> operationType.equals(failConfig.getOperationType()))
-            .filter(failConfig -> all().or(byInstanceId()
+            .filter(failConfig -> failAll().or(byInstanceId()
             .and(byPlanId())
             .and(byServiceId())
             .and(byPlanName())
-            .and(byPlanName()))
+            .and(byServiceName()))
             .test(serviceInstance, failConfig))
             .map(FailConfiguration::getStatus).findFirst();
     }
 
-    private BiPredicate<ServiceInstance, FailConfiguration> all() {
-        return (serviceInstance, failConfiguration) -> failConfiguration.getAll() != null ? failConfiguration.getAll() : false;
+    private BiPredicate<ServiceInstance, FailConfiguration> failAll() {
+        return (serviceInstance, failConfiguration) -> failConfiguration.getFailAll() != null ? failConfiguration.getFailAll() : false;
     }
 
     private BiPredicate<ServiceInstance, FailConfiguration> byInstanceId() {
@@ -132,24 +135,16 @@ public class BehaviorEngine {
                 .stream()
                 .map(this::getServiceByName)
                 .filter(Optional::isPresent)
-                .map(planOptional -> planOptional.get().getId())
+                .map(serviceOptional -> serviceOptional.get().getId())
                 .anyMatch(id -> id.equals(serviceInstance.getServiceId()));
         };
     }
 
     private Optional<Service> getServiceByName(String name) {
-        return getServices().filter(service -> service.getName().equals(name)).findFirst();
+        return appConfiguration.getServices().filter(service -> service.getName().equals(name)).findFirst();
     }
 
     private Optional<Plan> getPlanByName(String name) {
-        return getPlans().filter(plan -> plan.getName().equals(name)).findFirst();
-    }
-
-    private Stream<Service> getServices() {
-        return appConfiguration.getCatalog().getServices().stream();
-    }
-
-    private Stream<Plan> getPlans() {
-        return getServices().flatMap(service -> service.getPlans().stream());
+        return appConfiguration.getPlans().filter(plan -> plan.getName().equals(name)).findFirst();
     }
 }

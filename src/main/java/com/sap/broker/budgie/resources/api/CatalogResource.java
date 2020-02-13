@@ -12,7 +12,7 @@ import com.sap.broker.budgie.impl.ServiceBroker;
 
 import java.util.List;
 
-@Path("/{configId}/v2/catalog")
+@Path("/configurations/{configId}/v2/catalog")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CatalogResource {

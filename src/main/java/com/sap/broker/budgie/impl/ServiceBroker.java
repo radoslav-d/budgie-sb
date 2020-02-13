@@ -2,9 +2,9 @@ package com.sap.broker.budgie.impl;
 
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -19,7 +19,7 @@ import com.sap.broker.budgie.exception.NotFoundException;
 public class ServiceBroker {
 
     private ApplicationConfiguration configuration;
-    private Map<UUID, ServiceInstance> serviceInstances = new HashMap<>();
+    private Map<UUID, ServiceInstance> serviceInstances = new ConcurrentHashMap<>();
 
     @Inject
     public ServiceBroker(ApplicationConfiguration configuration) {
@@ -30,7 +30,7 @@ public class ServiceBroker {
         return configuration.getCatalog();
     }
 
-    public synchronized Collection<ServiceInstance> getAll() {
+    public Collection<ServiceInstance> getAll() {
         return serviceInstances.values();
     }
 
@@ -38,7 +38,7 @@ public class ServiceBroker {
         return get(id, true);
     }
 
-    public synchronized ServiceInstance get(UUID id, boolean required) {
+    public ServiceInstance get(UUID id, boolean required) {
         ServiceInstance serviceInstance = serviceInstances.get(id);
         if (serviceInstance == null && required) {
             throw new NotFoundException(MessageFormat.format("Service instance \"{0}\" not found!", id));
@@ -46,19 +46,19 @@ public class ServiceBroker {
         return serviceInstance;
     }
 
-    public synchronized void create(ServiceInstance serviceInstance) {
+    public void create(ServiceInstance serviceInstance) {
         serviceInstances.put(serviceInstance.getId(), serviceInstance);
     }
 
-    public synchronized void update(ServiceInstance serviceInstance) {
+    public void update(ServiceInstance serviceInstance) {
         serviceInstances.put(serviceInstance.getId(), serviceInstance);
     }
 
-    public synchronized void deleteAll() {
+    public void deleteAll() {
         serviceInstances.clear();
     }
 
-    public synchronized void delete(UUID id) {
+    public void delete(UUID id) {
         ServiceInstance serviceInstance = serviceInstances.remove(id);
         if (serviceInstance == null) {
             throw new NotFoundException(MessageFormat.format("Service instance \"{0}\" not found!", id));

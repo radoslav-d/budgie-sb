@@ -15,7 +15,7 @@ public class ServiceInstance {
     @SerializedName("plan_id")
     private UUID planId;
     private Map<String, Object> parameters;
-    private Map<UUID, Binding> bindings;
+    private Map<UUID, BindingMetadata> bindings;
 
     public ServiceInstance(UUID id, UUID serviceId, UUID planId) {
         this.id = id;
@@ -55,21 +55,21 @@ public class ServiceInstance {
         this.parameters = parameters;
     }
 
-    public Map<UUID, Binding> getBindings() {
+    public Map<UUID, BindingMetadata> getBindings() {
         return bindings;
     }
 
-    public void setBindings(Map<UUID, Binding> bindings) {
+    public void setBindings(Map<UUID, BindingMetadata> bindings) {
         this.bindings = bindings;
     }
 
-    public void bind(UUID bindingId, Binding binding) {
+    public void bind(UUID bindingId, BindingMetadata binding) {
         validateBindingMap();
         binding.setId(bindingId);
         bindings.put(id, binding);
     }
 
-    public Binding getBinding(UUID bindingId) {
+    public BindingMetadata getBinding(UUID bindingId) {
         validateBindingMap();
         return bindings.get(bindingId);
     }

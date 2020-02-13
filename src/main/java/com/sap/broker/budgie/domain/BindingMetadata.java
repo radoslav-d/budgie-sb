@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Map;
 import java.util.UUID;
 
-public class Binding {
+public class BindingMetadata {
 
     private UUID id;
 

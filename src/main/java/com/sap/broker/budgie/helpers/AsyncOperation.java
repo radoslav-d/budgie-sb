@@ -1,7 +1,5 @@
 package com.sap.broker.budgie.helpers;
 
-import com.sap.broker.budgie.exception.InterruptedOperationException;
-
 import java.util.function.Supplier;
 
 public class AsyncOperation implements Runnable {
@@ -13,7 +11,6 @@ public class AsyncOperation implements Runnable {
     public AsyncOperation(Supplier<AsyncOperationState> operation, int milliseconds) {
         this.operation = operation;
         this.milliseconds = milliseconds;
-        new Thread(this).start();
     }
 
     @Override
@@ -23,7 +20,7 @@ public class AsyncOperation implements Runnable {
             Thread.sleep(milliseconds);
             state = operation.get();
         } catch (InterruptedException e) {
-            throw new InterruptedOperationException(e);
+            throw new IllegalStateException(e);
         }
     }
 

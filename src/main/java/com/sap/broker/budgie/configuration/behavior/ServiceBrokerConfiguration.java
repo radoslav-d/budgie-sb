@@ -1,22 +1,12 @@
 package com.sap.broker.budgie.configuration.behavior;
 
 import java.util.List;
-import java.util.UUID;
 
-public class BehaviorConfiguration {
+public class ServiceBrokerConfiguration {
 
-    private UUID id;
     private Integer asyncDuration;
     private Integer syncDuration;
     private List<FailConfiguration> failConfigurations;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public Integer getAsyncDuration() {
         return asyncDuration;
