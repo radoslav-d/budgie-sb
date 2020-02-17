@@ -2,9 +2,9 @@ package com.sap.broker.budgie.impl;
 
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -19,7 +19,7 @@ import com.sap.broker.budgie.exception.NotFoundException;
 public class ServiceBroker {
 
     private ApplicationConfiguration configuration;
-    private Map<UUID, ServiceInstance> serviceInstances = new HashMap<>();
+    private Map<UUID, ServiceInstance> serviceInstances = new ConcurrentHashMap<>();
 
     @Inject
     public ServiceBroker(ApplicationConfiguration configuration) {

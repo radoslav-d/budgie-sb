@@ -26,5 +26,4 @@ public class SpringConfiguration {
     public List<Visitor> catalogVisitors() {
         return Arrays.asList(new CatalogValidatingVisitor(), new GuidInsertingVisitor());
     }
-
 }

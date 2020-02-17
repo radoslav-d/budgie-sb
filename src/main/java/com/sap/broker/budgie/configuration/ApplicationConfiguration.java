@@ -2,9 +2,12 @@ package com.sap.broker.budgie.configuration;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import com.sap.broker.budgie.domain.Plan;
+import com.sap.broker.budgie.domain.Service;
 import org.springframework.stereotype.Component;
 
 import com.sap.broker.budgie.Messages;
@@ -34,6 +37,14 @@ public class ApplicationConfiguration {
         return catalog;
     }
 
+    public Stream<Service> getServices() {
+        return getCatalog().getServices().stream();
+    }
+
+    public Stream<Plan> getPlans() {
+        return getServices().flatMap(service -> service.getPlans().stream());
+    }
+
     private Catalog getCatalogFromEnvironment() {
         Catalog catalog = environment.getJsonVariable(CFG_CATALOG, Catalog.class);
         if (catalog == null) {
@@ -43,9 +54,7 @@ public class ApplicationConfiguration {
     }
 
     private void process(Catalog catalog) {
-        for (Visitor visitor : catalogVisitors) {
-            catalog.accept(visitor);
-        }
+        catalogVisitors.forEach(catalog::accept);
     }
 
 }

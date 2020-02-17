@@ -2,10 +2,10 @@
 applications:
   - name: budgie-sb
     host: budgie-sb
-    path: target/budgie-sb-0.0.1-SNAPSHOT.war
+    path: target/budgie-sb-0.1.2.war
     buildpack: sap_java_buildpack
     disk_quota: 256M
-    memory: 256M
+    memory: 1G
     env:
       TARGET_RUNTIME: tomcat
       CATALOG: >
@@ -14,11 +14,14 @@ applications:
             {
               "name": "foo",
               "description": "foo",
-              "bindable": false,
+              "bindable": true,
+              "bindings_retrievable": true,
+              "instances_retrievable": true,
               "plans": [
                 {
                   "name": "foo-a",
-                  "description": "foo-a"
+                  "description": "foo-a",
+                  "bindable": true
                 },
                 {
                   "name": "foo-b",

@@ -10,9 +10,10 @@ import com.sap.broker.budgie.providers.GsonMessageBodyReader;
 import com.sap.broker.budgie.providers.GsonMessageBodyWriter;
 import com.sap.broker.budgie.providers.ServiceBrokerExceptionMapper;
 import com.sap.broker.budgie.resources.api.CatalogResource;
+import com.sap.broker.budgie.resources.api.ConfigurationResource;
 import com.sap.broker.budgie.resources.api.ServiceInstancesResource;
 
-@ApplicationPath("/v2")
+@ApplicationPath("/")
 public class ServiceBrokerApplication extends Application {
 
     @Override
@@ -23,6 +24,7 @@ public class ServiceBrokerApplication extends Application {
         classes.add(GsonMessageBodyWriter.class);
         classes.add(GsonMessageBodyReader.class);
         classes.add(ServiceBrokerExceptionMapper.class);
+        classes.add(ConfigurationResource.class);
         return classes;
     }
 
