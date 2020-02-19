@@ -15,6 +15,10 @@ public class Service {
     private Boolean bindable;
     @SerializedName("plan_updateable")
     private Boolean planUpdateable;
+    @SerializedName("instances_retrievable")
+    private Boolean instancesRetrievable;
+    @SerializedName("bindings_retrievable")
+    private Boolean bindingsRetrievable;
     private List<Plan> plans;
 
     public Service(UUID id, String name, String description, boolean bindable, List<Plan> plans) {
@@ -79,6 +83,32 @@ public class Service {
 
     public void setBindable(Boolean bindable) {
         this.bindable = bindable;
+    }
+
+    public Boolean getBindable() {
+        return bindable;
+    }
+
+    public Boolean getPlanUpdateable() {
+        return planUpdateable;
+    }
+
+    public Boolean getInstancesRetrievable() {
+        return instancesRetrievable;
+    }
+
+    public Service setInstancesRetrievable(Boolean instancesRetrievable) {
+        this.instancesRetrievable = instancesRetrievable;
+        return this;
+    }
+
+    public Boolean getBindingsRetrievable() {
+        return bindingsRetrievable;
+    }
+
+    public Service setBindingsRetrievable(Boolean bindingsRetrievable) {
+        this.bindingsRetrievable = bindingsRetrievable;
+        return this;
     }
 
     public void setPlanUpdateable(Boolean planUpdateable) {

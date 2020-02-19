@@ -66,7 +66,7 @@ public class ServiceInstance {
     public void bind(UUID bindingId, BindingMetadata binding) {
         validateBindingMap();
         binding.setId(bindingId);
-        bindings.put(id, binding);
+        bindings.put(bindingId, binding);
     }
 
     public BindingMetadata getBinding(UUID bindingId) {
